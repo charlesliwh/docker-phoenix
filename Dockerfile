@@ -28,13 +28,23 @@ ENV HBASE_HOME /usr/local/hbase
 ENV PATH $PATH:$HBASE_HOME/bin
 
 # Phoenix
-ENV PHOENIX_VERSION 4.6.0
-RUN curl -s http://apache.mirror.vexxhost.com/phoenix/phoenix-$PHOENIX_VERSION-HBase-$HBASE_MAJOR/bin/phoenix-$PHOENIX_VERSION-HBase-$HBASE_MAJOR-bin.tar.gz | tar -xz -C /usr/local/
+ENV PHOENIX_VERSION 4.7.0
+#RUN curl -s http://apache.mirror.vexxhost.com/phoenix/phoenix-$PHOENIX_VERSION-HBase-$HBASE_MAJOR/bin/phoenix-$PHOENIX_VERSION-HBase-$HBASE_MAJOR-bin.tar.gz | tar -xz -C /usr/local/
+RUN curl -s https://dist.apache.org/repos/dist/dev/phoenix/phoenix-4.7.0-HBase-1.1-rc1/bin/phoenix-4.7.0-HBase-1.1-bin.tar.gz | tar -xz -C /usr/local/
 RUN cd /usr/local && ln -s ./phoenix-$PHOENIX_VERSION-HBase-$HBASE_MAJOR-bin phoenix
 ENV PHOENIX_HOME /usr/local/phoenix
 ENV PATH $PATH:$PHOENIX_HOME/bin
 RUN ln -s $PHOENIX_HOME/phoenix-core-$PHOENIX_VERSION-HBase-$HBASE_MAJOR.jar $HBASE_HOME/lib/phoenix.jar
 RUN ln -s $PHOENIX_HOME/phoenix-$PHOENIX_VERSION-HBase-$HBASE_MAJOR-server.jar $HBASE_HOME/lib/phoenix-server.jar
+
+# Spark
+ENV SPARK_VERSION 1.6.0
+ENV SPARK_HADOOP hadoop2.4 
+RUN curl -s http://apache.mirror.gtcomm.net/spark/spark-$SPARK_VERSION/spark-$SPARK_VERSION-bin-$SPARK_HADOOP.tgz | tar -xz -C /usr/local/
+RUN cd /usr/local && ln -s ./spark-$SPARK_VERSION-bin-$SPARK_HADOOP spark
+ENV SPARK_HOME /usr/local/spark
+
+ADD spark-defaults.conf $SPARK_HOME/conf/spark-defaults.conf
 
 # HBase and Phoenix configuration files
 RUN rm $HBASE_HOME/conf/hbase-site.xml
