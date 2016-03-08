@@ -12,7 +12,7 @@ RUN mkdir /tmp/zookeeper
 
 # HBase
 ENV HBASE_MAJOR 1.1
-ENV HBASE_MINOR 2
+ENV HBASE_MINOR 3
 ENV HBASE_VERSION "${HBASE_MAJOR}.${HBASE_MINOR}"
 RUN	if [ $HBASE_MAJOR == 0.98 ]; then \
 		curl -s http://apache.mirror.gtcomm.net/hbase/$HBASE_VERSION/hbase-$HBASE_VERSION-hadoop2-bin.tar.gz | tar -xz -C /usr/local/ && \
@@ -30,7 +30,7 @@ ENV PATH $PATH:$HBASE_HOME/bin
 # Phoenix
 ENV PHOENIX_VERSION 4.7.0
 #RUN curl -s http://apache.mirror.vexxhost.com/phoenix/phoenix-$PHOENIX_VERSION-HBase-$HBASE_MAJOR/bin/phoenix-$PHOENIX_VERSION-HBase-$HBASE_MAJOR-bin.tar.gz | tar -xz -C /usr/local/
-RUN curl -s https://dist.apache.org/repos/dist/dev/phoenix/phoenix-4.7.0-HBase-1.1-rc1/bin/phoenix-4.7.0-HBase-1.1-bin.tar.gz | tar -xz -C /usr/local/
+RUN curl -s https://dist.apache.org/repos/dist/dev/phoenix/phoenix-4.7.0-HBase-1.1-rc6/bin/phoenix-4.7.0-HBase-1.1-bin.tar.gz | tar -xz -C /usr/local/
 RUN cd /usr/local && ln -s ./phoenix-$PHOENIX_VERSION-HBase-$HBASE_MAJOR-bin phoenix
 ENV PHOENIX_HOME /usr/local/phoenix
 ENV PATH $PATH:$PHOENIX_HOME/bin
