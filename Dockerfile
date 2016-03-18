@@ -29,8 +29,7 @@ ENV PATH $PATH:$HBASE_HOME/bin
 
 # Phoenix
 ENV PHOENIX_VERSION 4.7.0
-#RUN curl -s http://apache.mirror.vexxhost.com/phoenix/phoenix-$PHOENIX_VERSION-HBase-$HBASE_MAJOR/bin/phoenix-$PHOENIX_VERSION-HBase-$HBASE_MAJOR-bin.tar.gz | tar -xz -C /usr/local/
-RUN curl -s https://dist.apache.org/repos/dist/dev/phoenix/phoenix-4.7.0-HBase-1.1-rc6/bin/phoenix-4.7.0-HBase-1.1-bin.tar.gz | tar -xz -C /usr/local/
+RUN curl -s http://apache.mirror.vexxhost.com/phoenix/phoenix-$PHOENIX_VERSION-HBase-$HBASE_MAJOR/bin/phoenix-$PHOENIX_VERSION-HBase-$HBASE_MAJOR-bin.tar.gz | tar -xz -C /usr/local/
 RUN cd /usr/local && ln -s ./phoenix-$PHOENIX_VERSION-HBase-$HBASE_MAJOR-bin phoenix
 ENV PHOENIX_HOME /usr/local/phoenix
 ENV PATH $PATH:$PHOENIX_HOME/bin
