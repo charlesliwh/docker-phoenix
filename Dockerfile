@@ -12,7 +12,7 @@ RUN mkdir /tmp/zookeeper
 
 # HBase
 ENV HBASE_MAJOR 1.1
-ENV HBASE_MINOR 3
+ENV HBASE_MINOR 4 
 ENV HBASE_VERSION "${HBASE_MAJOR}.${HBASE_MINOR}"
 RUN	if [ $HBASE_MAJOR == 0.98 ]; then \
 		curl -s http://apache.mirror.gtcomm.net/hbase/$HBASE_VERSION/hbase-$HBASE_VERSION-hadoop2-bin.tar.gz | tar -xz -C /usr/local/ && \
