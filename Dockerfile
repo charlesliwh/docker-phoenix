@@ -1,4 +1,4 @@
-FROM sequenceiq/hadoop-docker:2.7.1
+FROM sequenceiq/hadoop-docker:2.7.0
 MAINTAINER SequenceIQ
 
 
@@ -49,19 +49,29 @@ RUN ln -s $PHOENIX_HOME/phoenix-$PHOENIX_VERSION-HBase-$HBASE_MAJOR-server.jar $
 
 # Spark
 ENV SPARK_VERSION 1.6.0
-ENV SPARK_HADOOP hadoop2.4 
-RUN curl -s http://d3kbcqa49mib13.cloudfront.net/spark-1.6.0-bin-hadoop2.4.tgz | tar -xz -C /usr/local
+ENV SPARK_HADOOP hadoop2.6 
+RUN curl -s http://d3kbcqa49mib13.cloudfront.net/spark-1.6.0-bin-hadoop2.6.tgz | tar -xz -C /usr/local
 #RUN curl -s http://apache.mirror.gtcomm.net/spark/spark-$SPARK_VERSION/spark-$SPARK_VERSION-bin-$SPARK_HADOOP.tgz | tar -xz -C /usr/local/
 RUN cd /usr/local && ln -s ./spark-$SPARK_VERSION-bin-$SPARK_HADOOP spark
 ENV SPARK_HOME /usr/local/spark
-
+RUN mkdir $SPARK_HOME/yarn-remote-client
+ADD yarn-remote-client $SPARK_HOME/yarn-remote-client
 ADD spark-defaults.conf $SPARK_HOME/conf/spark-defaults.conf
+
 
 # HBase and Phoenix configuration files
 RUN rm $HBASE_HOME/conf/hbase-site.xml
 RUN rm $HBASE_HOME/conf/hbase-env.sh
 ADD hbase-site.xml $HBASE_HOME/conf/hbase-site.xml
 ADD hbase-env.sh $HBASE_HOME/conf/hbase-env.sh
+#RUN rm /usr/local/hadoop/etc/hadoop/core-site.xml
+#ADD core-site.xml /usr/local/hadoop/etc/hadoop/core-site.xml
+
+
+RUN $BOOTSTRAP && $HADOOP_PREFIX/bin/hadoop dfsadmin -safemode leave && $HADOOP_PREFIX/bin/hdfs dfs -put $SPARK_HOME-1.6.0-bin-hadoop2.6/lib /spark
+
+ENV YARN_CONF_DIR $HADOOP_PREFIX/etc/hadoop
+ENV PATH $PATH:$SPARK_HOME/bin:$HADOOP_PREFIX/bin
 
 # bootstrap-phoenix
 ADD bootstrap-phoenix.sh /etc/bootstrap-phoenix.sh
