@@ -73,6 +73,25 @@ RUN $BOOTSTRAP && $HADOOP_PREFIX/bin/hadoop dfsadmin -safemode leave && $HADOOP_
 ENV YARN_CONF_DIR $HADOOP_PREFIX/etc/hadoop
 ENV PATH $PATH:$SPARK_HOME/bin:$HADOOP_PREFIX/bin
 
+
+#adding analytics
+RUN mkdir /opt/interset
+ADD analytics-dev-bin.tar.gz /opt/interset/
+ADD interset.conf /opt/interset/interset.conf
+ADD create.sql /opt/interset/create.sql
+ADD minutedata.csv /opt/interset/minutedata.csv
+
+RUN sed -i 's/SNAPPY/NONE/g' /opt/interset/create.sql
+RUN sed -i 's/usr\/hdp\/current/usr\/local/g' /opt/interset/analytics-dev/bin/env.sh
+RUN sed -i 's/spark-client/spark/g' /opt/interset/analytics-dev/bin/env.sh
+RUN sed -i 's/etc/usr\/local/g' /opt/interset/analytics-dev/bin/sql.sh
+RUN sed -i 's/usr\/hdp\/current\/phoenix-client\/phoenix-client.jar/usr\/local\/phoenix\/phoenix-4.7.0-HBase-1.1-client.jar/g' /opt/interset/analytics-dev/bin/sql.sh
+RUN sed -i 's/zkPhoenix = localhost:2181:\/hbase-unsecure/zkPhoenix = localhost/g' /opt/interset/interset.conf
+RUN sed -i 's/parallelism = 32/parallelism = 8/g' /opt/interset/interset.conf
+RUN sed -i 's/numExecutors = 8/numExecutors = 1/g' /opt/interset/interset.conf
+RUN sed -i 's/executorMem = 4g/executorMem = 1g/g' /opt/interset/interset.conf
+RUN sed -i 's/driverMem = 2g/driverMem = 1g/g' /opt/interset/interset.conf
+
 # bootstrap-phoenix
 ADD bootstrap-phoenix.sh /etc/bootstrap-phoenix.sh
 RUN chown root:root /etc/bootstrap-phoenix.sh

@@ -24,6 +24,16 @@ $HADOOP_PREFIX/sbin/start-yarn.sh
 $HBASE_HOME/bin/start-hbase.sh
 
 
+#start creating database
+echo "waiting 10 seconds and then start creating database schema"
+sleep 10s
+/usr/local/phoenix/bin/sqlline.py localhost /opt/interset/create.sql
+/usr/local/phoenix/bin/psql.py -d ',' -t OBSERVED_ENTITY_RELATION_MINUTELY_COUNTS localhost /opt/interset/minutedata.csv
+
+sed -i 's/tenantID = 0/tenantID = CA/g' /opt/interset/interset.conf
+/opt/interset/analytics-dev/bin/training.sh /opt/interset/interset.conf
+#/opt/interset/analytics-dev/bin/scoring.sh /opt/interset/interset.conf
+
 if [[ $1 == "-d" ]]; then
   while true; do sleep 1000; done
 fi
